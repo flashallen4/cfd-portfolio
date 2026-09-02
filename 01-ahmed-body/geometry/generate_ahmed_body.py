@@ -159,8 +159,13 @@ def main():
         )
         print(f"  Volume: {volume / 1e6:.3f} L (liters, from mm^3)")
 
+        # Export in meters: internal geometry is built in mm (matches
+        # literature dimension conventions), but OpenFOAM/CFD tooling
+        # expects meters. Scale here, at the single point of CFD export,
+        # rather than converting per-case downstream.
+        solid_m = solid.val().scale(0.001)
         outfile = args.outdir / f"ahmed_body_{int(angle):02d}deg.stl"
-        cq.exporters.export(solid, str(outfile))
+        cq.exporters.export(cq.Workplane("XY").add(solid_m), str(outfile))
         print(f"  Exported: {outfile}")
 
 
