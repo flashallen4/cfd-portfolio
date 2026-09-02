@@ -1,0 +1,64 @@
+# OpenFOAM
+processor*/
+*.OpenFOAM
+postProcessing/
+[0-9]*.[0-9]*/
+[1-9][0-9]*/
+constant/polyMesh/points
+constant/polyMesh/faces
+constant/polyMesh/owner
+constant/polyMesh/neighbour
+constant/polyMesh/boundary
+constant/polyMesh/cellZones
+constant/polyMesh/faceZones
+constant/polyMesh/pointZones
+constant/polyMesh/sets/
+polyMesh/
+*.obj
+*.stl.bak
+log.*
+*.log
+
+# Gmsh
+*.msh
+*.pos
+
+# CalculiX
+*.frd
+*.dat
+*.12d
+*.cvg
+*.sta
+*.equ
+*.eig
+*.mtx
+
+# ParaView
+*.pvsm
+*.pvd
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.ipynb_checkpoints/
+venv/
+.venv/
+
+# Large data / results (raw, regenerate via scripts)
+*.vtu
+*.vtk
+*.vtp
+*.foam
+*.h5
+*.npy
+*.npz
+
+# OS / editor
+.DS_Store
+*.swp
+*~
+
+# Keep generated figures (override binary excludes for PNG/PDF plots)
+!results/**/*.png
+!results/**/*.pdf
