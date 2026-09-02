@@ -49,7 +49,7 @@ Projects are evaluated on whether they answer a real engineering question with d
 
 | # | Project | Status | Description |
 |---|---|---|---|
-| 01 | [Ahmed Body](01-ahmed-body/) | Planned | External aerodynamics, separated flow, turbulence modelling, mesh independence, drag validation |
+| 01 | [Ahmed Body](01-ahmed-body/) | Active | External aerodynamics, separated flow, turbulence modelling, mesh independence, drag validation |
 | 02 | [Circular Cylinder VIV](02-circular-cylinder-viv/) | Planned | Vortex shedding, Strouhal number, unsteady CFD, fluid–structure interaction |
 | 03 | [Finite Wing / Wingtip Vortex](03-finite-wing/) | Planned | 3D aerodynamics, induced drag, aspect-ratio effects, wingtip vortex formation |
 | 04 | [Supersonic Wedge](04-supersonic-wedge/) | Planned | Compressible CFD, oblique shock formation, analytical validation |
