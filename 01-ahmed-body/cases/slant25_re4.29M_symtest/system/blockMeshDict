@@ -1,0 +1,96 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+// HALF-DOMAIN SYMMETRY FEASIBILITY TEST (see mesh_development_log.md).
+// Ahmed body length L = 1.044 m
+// Domain: 8L total length (2L upstream, 6L downstream), 1L half-width
+// (symmetry plane at y=0), 2L height.
+// Background cell size in y kept identical to the full-domain case
+// (~0.0835m/cell) by using 13 cells across the halved 1.044m width,
+// rather than reusing 25 cells (which would have coarsened the mesh
+// and confounded the domain-halving comparison).
+convertToMeters 1;
+vertices
+(
+    (-2.088  0.000 0)      // 0
+    ( 6.264  0.000 0)      // 1
+    ( 6.264  1.044 0)      // 2
+    (-2.088  1.044 0)      // 3
+    (-2.088  0.000 2.088)  // 4
+    ( 6.264  0.000 2.088)  // 5
+    ( 6.264  1.044 2.088)  // 6
+    (-2.088  1.044 2.088)  // 7
+);
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (100 13 25) simpleGrading (1 1 1)
+);
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (2 6 5 1)
+        );
+    }
+    ground
+    {
+        type wall;
+        faces
+        (
+            (0 3 2 1)
+        );
+    }
+    top
+    {
+        type patch;
+        faces
+        (
+            (4 5 6 7)
+        );
+    }
+    // y=0: symmetry plane (Ahmed body is symmetric at zero yaw; see
+    // mesh_development_log.md for the physical justification and the
+    // explicit caveat that this does not apply to any future DES
+    // extension on this geometry).
+    symmetryPlane
+    {
+        type symmetryPlane;
+        faces
+        (
+            (1 5 4 0)
+        );
+    }
+    // y=+1.044: far-field slip wall (same treatment as the full-domain
+    // case's side1/side2, per the earlier locked decision).
+    farfield
+    {
+        type patch;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+);
+// ************************************************************************* //

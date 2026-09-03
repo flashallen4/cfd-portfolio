@@ -1,0 +1,147 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      snappyHexMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+castellatedMesh true;
+snap            true;
+addLayers       true;
+
+geometry
+{
+    ahmedBody
+    {
+        type triSurfaceMesh;
+        file "ahmedBody.stl";
+    }
+
+    // Wake refinement region: captures the C-pillar vortices and
+    // separation wake downstream of the body. Extends from just behind
+    // the body to several body-lengths downstream, and slightly wider/
+    // taller than the body itself to capture vortex spreading.
+    wakeRefinementBox
+    {
+        type searchableBox;
+        min (1.044  -0.35 0.0);
+        max (4.176   0.35 0.7);
+    }
+}
+
+castellatedMeshControls
+{
+    maxLocalCells       200000;
+    maxGlobalCells      6000000;
+    minRefinementCells  10;
+    maxLoadUnbalance    0.10;
+    nCellsBetweenLevels 3;
+
+    features
+    (
+    );
+
+    refinementSurfaces
+    {
+        ahmedBody
+        {
+            // Iteration 5: reduced max level from 8 to 7. Iterations
+            // 2-4 all showed non-convergent surface refinement stuck
+            // at ~150-200 cells/iteration indefinitely (not bounded by
+            // maxGlobalCells, since surface-driven refinement isn't
+            // subject to that cap). Hypothesis: tangent-line ambiguity
+            // at the fillet-to-flat-face transition triggers repeated
+            // refinement flip-flopping as cells get smaller. Testing
+            // whether a lower max level avoids this.
+            level (6 7);
+        }
+    }
+
+    resolveFeatureAngle 60;
+
+    refinementRegions
+    {
+        wakeRefinementBox
+        {
+            mode    inside;
+            levels  ((1e15 3));
+        }
+    }
+
+    // A point guaranteed to be inside the fluid domain (not inside the
+    // body or outside the background block). Chosen well upstream and
+    // off to the side, clearly in open flow.
+    insidePoint (-1.5 0.5 1.0);
+
+    allowFreeStandingZoneFaces false;
+}
+
+snapControls
+{
+    nSmoothPatch    3;
+    tolerance       4.0;
+    nSolveIter      30;
+    nRelaxIter      5;
+    nFeatureSnapIter 10;
+}
+
+addLayersControls
+{
+    relativeSizes   false;
+
+    layers
+    {
+        ahmedBody
+        {
+            nSurfaceLayers 18;
+        }
+    }
+
+    // Computed via scripts/compute_yplus_layer.py for U=60 m/s, L=1.044m,
+    // target y+ = 1. See that script's output for derivation.
+    expansionRatio          1.2;
+    firstLayerThickness     6.742e-06;
+
+    minThickness            1e-08;
+    nGrow                   0;
+
+    featureAngle            60;
+    nRelaxIter              3;
+    nSmoothSurfaceNormals   1;
+    nSmoothNormals          3;
+    nSmoothThickness        2;
+    maxFaceThicknessRatio   0.5;
+    maxThicknessToMedialRatio 0.3;
+    minMedianAxisAngle      90;
+    nBufferCellsNoExtrude   0;
+    nLayerIter              50;
+}
+
+meshQualityControls
+{
+    maxNonOrtho             65;
+    maxBoundarySkewness     20;
+    maxInternalSkewness     4;
+    maxConcave              80;
+    minFlatness             0.5;
+    minVol                  -1e30;
+    minTetQuality           1e-30;
+    minTwist                0.02;
+    minDeterminant          0.001;
+    minFaceWeight           0.02;
+    minVolRatio             0.01;
+    nSmoothScale            4;
+    errorReduction          0.75;
+}
+
+mergeTolerance 1e-6;
+
+// ************************************************************************* //

@@ -163,10 +163,20 @@ def main():
         # literature dimension conventions), but OpenFOAM/CFD tooling
         # expects meters. Scale here, at the single point of CFD export,
         # rather than converting per-case downstream.
+        #
+        # Explicit tessellation tolerances (not CadQuery defaults) --
+        # linear deflection 0.5 mm, angular deflection 5 deg -- chosen to
+        # keep the 100 mm nose fillet visibly smooth (dozens of facets
+        # around its curvature) without generating an excessive facet
+        # count on the large flat panels.
         solid_m = solid.val().scale(0.001)
         outfile = args.outdir / f"ahmed_body_{int(angle):02d}deg.stl"
-        cq.exporters.export(cq.Workplane("XY").add(solid_m), str(outfile))
-        print(f"  Exported: {outfile}")
+        cq.exporters.export(
+            cq.Workplane("XY").add(solid_m),
+            str(outfile),
+            tolerance=0.0005,
+            angularTolerance=0.087,  # ~5 degrees, in radians
+        )
 
 
 if __name__ == "__main__":

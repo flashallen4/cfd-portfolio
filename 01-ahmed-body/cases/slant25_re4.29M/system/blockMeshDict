@@ -1,0 +1,94 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      blockMeshDict;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+// Ahmed body length L = 1.044 m
+// Domain: 8L total length (2L upstream, 6L downstream), 2L width, 2L height
+// No symmetry plane (Decision 9: full domain)
+
+convertToMeters 1;
+
+vertices
+(
+    (-2.088 -1.044 0)      // 0
+    ( 6.264 -1.044 0)      // 1
+    ( 6.264  1.044 0)      // 2
+    (-2.088  1.044 0)      // 3
+    (-2.088 -1.044 2.088)  // 4
+    ( 6.264 -1.044 2.088)  // 5
+    ( 6.264  1.044 2.088)  // 6
+    (-2.088  1.044 2.088)  // 7
+);
+
+// Background cell counts: coarse, since snappyHexMesh will refine near
+// the body. This block only needs to resolve the far-field reasonably.
+// Cell size target ~ 0.05-0.08 m in the background.
+blocks
+(
+    hex (0 1 2 3 4 5 6 7) (100 25 25) simpleGrading (1 1 1)
+);
+
+boundary
+(
+    inlet
+    {
+        type patch;
+        faces
+        (
+            (0 4 7 3)
+        );
+    }
+    outlet
+    {
+        type patch;
+        faces
+        (
+            (2 6 5 1)
+        );
+    }
+    ground
+    {
+        type wall;
+        faces
+        (
+            (0 3 2 1)
+        );
+    }
+    top
+    {
+        type patch;
+        faces
+        (
+            (4 5 6 7)
+        );
+    }
+    side1
+    {
+        type patch;
+        faces
+        (
+            (1 5 4 0)
+        );
+    }
+    side2
+    {
+        type patch;
+        faces
+        (
+            (3 7 6 2)
+        );
+    }
+);
+
+// ************************************************************************* //

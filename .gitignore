@@ -62,3 +62,18 @@ venv/
 # Keep generated figures (override binary excludes for PNG/PDF plots)
 !results/**/*.png
 !results/**/*.pdf
+
+# Keep specific diagnostic logs documenting the Ahmed body mesh
+# development investigation (see 01-ahmed-body/mesh/mesh_development_log.md).
+# These are primary evidence for documented debugging conclusions, not
+# disposable scrollback -- explicitly whitelisted against the blanket
+# log.* exclusion above.
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh_angle90_diagnostic
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh_angle120_diagnostic
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh_angle170_diagnostic
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh_wakebox_diagnostic
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh_candidate120
+!01-ahmed-body/cases/slant25_re4.29M/log.snappyHexMesh_candidate120b
+!01-ahmed-body/cases/slant25_re4.29M_symtest/log.snappyHexMesh_symtest
+!01-ahmed-body/cases/slant25_re4.29M_layerdiag/log.snappyHexMesh_layerdiag

@@ -1,7 +1,29 @@
 # Project 01 — Ahmed Body
 
 ## Status
-**Active.** Project definition and computational plan finalized. Geometry, meshing, and simulation not yet started.
+**Active — blocked on meshing due to a hardware constraint.** Project
+definition, computational plan, and geometry are complete and verified
+(see `geometry/` and `validation/reference_data/`). Mesh development
+for the first case (25 deg slant, 60 m/s) identified a numerically
+sound meshing configuration (surface refinement level (6,7),
+resolveFeatureAngle 120, wall-resolved 18-layer boundary stack
+targeting y+ ~= 1) that achieves clean castellation convergence and
+correctly matches all 18 requested boundary layers at the intended
+thickness. However, this configuration crashes the WSL2 virtual
+machine during the layer-truncation step, reproducibly, and is not
+currently executable on the available hardware (total system RAM
+~15.85 GB, WSL2 already allocated 12 GB, leaving no safe headroom to
+increase the memory ceiling further). A symmetry-plane half-domain
+variant (see Decision 9 reconsideration below) was tested to reduce
+memory footprint and also crashed, indicating the issue may not be
+purely proportional to total mesh size. Diagnostic investigation into
+whether this is a hardware limit or an algorithmic memory-scaling
+issue specific to this geometry's sharp rear-corner features is
+ongoing; see `mesh/mesh_development_log.md` for the full investigation
+history. This result -- a correct configuration blocked by execution
+constraints, not by an unresolved numerical/modelling error -- is
+documented here rather than silently worked around, consistent with
+this project's approach to limitations.
 
 ## Overview
 The Ahmed body is a simplified ground-vehicle bluff-body geometry used to study three-dimensional separated flow. Its rear slant angle controls the transition between two distinct wake topologies, producing a well-documented non-monotonic drag-vs-angle curve that makes it a standard benchmark for external-aerodynamics CFD.
@@ -28,6 +50,12 @@ C_D will rise with slant angle up to a critical angle near 30°, then drop sharp
 - Ground plane modelled as a stationary no-slip wall, matching the actual experimental setups of Ahmed (1984) and Lienhart & Becker (2003), neither of which used a moving belt.
 - Steady RANS (not scale-resolving) for the baseline study. A DES comparison on the 25° case is a possible future extension, not part of the baseline.
 - Incompressible flow (M < 0.15 at all tested velocities).
+- Decision 9 (full domain, no symmetry plane) is under reconsideration
+  due to a hardware memory constraint encountered during mesh
+  generation. See `mesh/mesh_development_log.md` for the physical
+  justification being evaluated for a symmetry-plane alternative
+  (valid for the steady-RANS baseline; explicitly does not extend to
+  any future DES extension, which would require the full domain).
 
 ## Case Matrix
 
