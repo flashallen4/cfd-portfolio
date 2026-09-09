@@ -17,22 +17,27 @@ application     foamRun;
 
 solver          incompressibleFluid;
 
+// DIAGNOSTIC TEST: starting from uniform initial conditions (0/)
+// instead of resuming from the SIMPLEC steady solution (2000/), to
+// isolate whether the anomalously high Courant number (reported
+// ~1037 mean / ~107343 max, vs ~0.5 expected) is caused by an
+// inconsistent phi field inherited from the SIMPLEC resume, or by
+// something else (e.g. our deltaT/Co calculation methodology).
 startFrom       latestTime;
-
 startTime       0;
-
 stopAt          endTime;
+endTime         0.2;
 
-// Extended run: 1000-iteration run reached endTime without triggering
-// residualControl (Ux/Uy/Uz/p/k residuals all still above 1e-4; only
-// omega had converged). Cd was still drifting (0.1546 -> 0.1511 over
-// the final 4 iterations), not yet stable. Extending to 2000 to
-// determine whether the case is still naturally converging or has
-// plateaued. No other settings changed -- single-variable test.
-endTime         2000;
-deltaT          1;
-writeControl    timeStep;
-writeInterval   50;
+// Initial deltaT computed from actual mesh/solution data (not guessed):
+// finest cell = 0.9598mm, max velocity = 96.2 m/s in domain (see
+// mesh_development_log.md derivation), targeting Co<=0.5 at the most
+// restrictive location. adjustTimeStep will self-correct from here.
+deltaT          5e-06;
+adjustTimeStep  yes;
+maxCo           0.5;
+
+writeControl    adjustableRunTime;
+writeInterval   0.001;
 
 purgeWrite      0;
 

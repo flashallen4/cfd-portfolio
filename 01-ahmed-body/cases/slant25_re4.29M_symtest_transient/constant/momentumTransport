@@ -1,0 +1,29 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+FoamFile
+{
+    format      ascii;
+    class       dictionary;
+    object      momentumTransport;
+}
+// * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
+
+simulationType RAS;
+
+RAS
+{
+    // k-omega SST (Decision 3): appropriate near-wall behavior and
+    // separation prediction for this class of problem. Now run in
+    // high-Re (wall-function) mode -- see README decision record and
+    // mesh_development_log.md for the wall-treatment history.
+    model               kOmegaSST;
+    turbulence          on;
+    printCoeffs         on;
+}
+
+// ************************************************************************* //

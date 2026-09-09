@@ -9,44 +9,22 @@ FoamFile
 {
     format      ascii;
     class       dictionary;
-    object      controlDict;
+    object      decomposeParDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-
-application     foamRun;
-
-solver          incompressibleFluid;
-
-startFrom       startTime;
-
-startTime       0;
-
-stopAt          endTime;
-
-endTime         1000;
-
-deltaT          1;
-
-writeControl    timeStep;
-
-writeInterval   100;
-
-purgeWrite      0;
-
-writeFormat     ascii;
-
-writePrecision  6;
-
-writeCompression off;
-
-timeFormat      general;
-
-timePrecision   6;
-
-runTimeModifiable true;
-
-functions
+// 8 subdomains: conservative choice (matches verified motorBike
+// tutorial), leaving CPU headroom for other concurrent workloads on
+// this machine. Physics/mesh/numerics completely unchanged -- this is
+// a pure computational speedup, not a numerical modification.
+numberOfSubdomains  8;
+decomposer      hierarchical;
+distributor     ptscotch;
+hierarchicalCoeffs
 {
+    // Domain is elongated in x (8.352m) vs y (1.044m half-domain) vs
+    // z (2.088m) -- favor more subdivisions in the long streamwise
+    // direction.
+    n               (4 2 1);
+    order           xyz;
 }
-
 // ************************************************************************* //

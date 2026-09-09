@@ -1,0 +1,16 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+// Free-stream velocity: 60 m/s, Re_L = 4.176e6 (matches Ahmed 1984).
+// Turbulence intensity assumed 5% (standard external-flow estimate).
+// k, omega computed via scripts/compute_yplus_layer.py-adjacent
+// calculation: k = 1.5*(U*I)^2, omega = k^0.5/(Cmu^0.25 * 0.07*L)
+flowVelocity         (60 0 0);
+pressure             0;
+turbulentKE          13.5;
+turbulentOmega       91.79;
+// ************************************************************************* //

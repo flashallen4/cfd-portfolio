@@ -1,0 +1,20 @@
+/*--------------------------------*- C++ -*----------------------------------*\
+  =========                 |
+  \\      /  F ield         | OpenFOAM: The Open Source CFD Toolbox
+   \\    /   O peration     | Website:  https://openfoam.org
+    \\  /    A nd           | Version:  11
+     \\/     M anipulation  |
+\*---------------------------------------------------------------------------*/
+type            probes;
+libs            ("libsampling.so");
+
+// Near-wake recirculation probe: x=1.15m (~0.1m downstream of rear),
+// y=0.10m (off symmetry plane, C-pillar/wake-flapping region),
+// z=0.15m (mid-height, within wake shear layer).
+probeLocations
+(
+    (1.15 0.10 0.15)
+);
+
+fields          (U p);
+// ************************************************************************* //

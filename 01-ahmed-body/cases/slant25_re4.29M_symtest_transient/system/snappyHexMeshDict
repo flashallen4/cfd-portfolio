@@ -13,9 +13,13 @@ FoamFile
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
 
+// Candidate configuration: level (6 7), resolveFeatureAngle 90.
+// Full run (snap + layers) to evaluate as an actual usable mesh,
+// rather than continuing to bisect resolveFeatureAngle toward zero
+// level-7 cells as a proxy metric.
 castellatedMesh true;
 snap            true;
-addLayers       true;
+addLayers       false;
 
 geometry
 {
@@ -61,11 +65,16 @@ castellatedMeshControls
             // at the fillet-to-flat-face transition triggers repeated
             // refinement flip-flopping as cells get smaller. Testing
             // whether a lower max level avoids this.
-            level (6 7);
+            level (4 5);
         }
     }
 
-    resolveFeatureAngle 60;
+    // Candidate configuration: level (6 7), resolveFeatureAngle 120.
+    // 120 achieved true castellation convergence (zero level-7 cells)
+    // in the earlier diagnostic; 90 plateaued at ~30-40 cells/iteration
+    // with no downward trend even with layers/snap enabled. Testing
+    // 120 as a full candidate mesh.
+    resolveFeatureAngle 120;
 
     refinementRegions
     {
@@ -101,7 +110,7 @@ addLayersControls
     {
         ahmedBody
         {
-            nSurfaceLayers 18;
+            nSurfaceLayers 12;
         }
     }
 

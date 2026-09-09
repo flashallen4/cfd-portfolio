@@ -12,14 +12,10 @@ FoamFile
     object      blockMeshDict;
 }
 // * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * //
-// HALF-DOMAIN SYMMETRY FEASIBILITY TEST (see mesh_development_log.md).
-// Ahmed body length L = 1.044 m
-// Domain: 8L total length (2L upstream, 6L downstream), 1L half-width
-// (symmetry plane at y=0), 2L height.
-// Background cell size in y kept identical to the full-domain case
-// (~0.0835m/cell) by using 13 cells across the halved 1.044m width,
-// rather than reusing 25 cells (which would have coarsened the mesh
-// and confounded the domain-halving comparison).
+// HALF-DOMAIN, 12-LAYER CONTROLLED TEST (see mesh_development_log.md).
+// Domain: 8L total length, 1L half-width (symmetry plane at y=0), 2L
+// height. Background cell size in y matches the full-domain case
+// (~0.0835m/cell) via 13 cells across the halved 1.044m width.
 convertToMeters 1;
 vertices
 (
@@ -70,10 +66,6 @@ boundary
             (4 5 6 7)
         );
     }
-    // y=0: symmetry plane (Ahmed body is symmetric at zero yaw; see
-    // mesh_development_log.md for the physical justification and the
-    // explicit caveat that this does not apply to any future DES
-    // extension on this geometry).
     symmetryPlane
     {
         type symmetryPlane;
@@ -82,8 +74,6 @@ boundary
             (1 5 4 0)
         );
     }
-    // y=+1.044: far-field slip wall (same treatment as the full-domain
-    // case's side1/side2, per the earlier locked decision).
     farfield
     {
         type patch;

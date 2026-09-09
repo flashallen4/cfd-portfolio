@@ -1,29 +1,23 @@
 # Project 01 — Ahmed Body
 
 ## Status
-**Active — blocked on meshing due to a hardware constraint.** Project
-definition, computational plan, and geometry are complete and verified
-(see `geometry/` and `validation/reference_data/`). Mesh development
-for the first case (25 deg slant, 60 m/s) identified a numerically
-sound meshing configuration (surface refinement level (6,7),
-resolveFeatureAngle 120, wall-resolved 18-layer boundary stack
-targeting y+ ~= 1) that achieves clean castellation convergence and
-correctly matches all 18 requested boundary layers at the intended
-thickness. However, this configuration crashes the WSL2 virtual
-machine during the layer-truncation step, reproducibly, and is not
-currently executable on the available hardware (total system RAM
-~15.85 GB, WSL2 already allocated 12 GB, leaving no safe headroom to
-increase the memory ceiling further). A symmetry-plane half-domain
-variant (see Decision 9 reconsideration below) was tested to reduce
-memory footprint and also crashed, indicating the issue may not be
-purely proportional to total mesh size. Diagnostic investigation into
-whether this is a hardware limit or an algorithmic memory-scaling
-issue specific to this geometry's sharp rear-corner features is
-ongoing; see `mesh/mesh_development_log.md` for the full investigation
-history. This result -- a correct configuration blocked by execution
-constraints, not by an unresolved numerical/modelling error -- is
-documented here rather than silently worked around, consistent with
-this project's approach to limitations.
+**Active — steady and transient wall-function results obtained for the 25 deg / 60 m/s case.** Wall-resolved (y+~=1) meshing was investigated extensively and found infeasible on available hardware due to a geometric incompatibility between automated boundary-layer extrusion and the Ahmed body's compound rear corners (see `mesh/mesh_development_log.md` for the full investigation). The project pivoted to a high-Re wall-function strategy (nutkWallFunction/kqRWallFunction/omegaWallFunction), which succeeded.
+
+Steady SIMPLEC results plateaued with a strongly periodic residual/Cd
+limit-cycle (not a converged fixed point), motivating a transient
+PIMPLE investigation. The transient run (on a mesh coarsened ~3.1x
+for computational feasibility) reached a statistically stationary
+periodic regime with a wake oscillation independently confirmed by
+both the integrated force signal and a local wake-velocity probe
+(agreement within 0.33%), consistent with a physically real
+near-wake "bubble pumping" mechanism documented in the literature for
+this geometry. A corrected Strouhal number (using body height, the
+literature-verified characteristic length for Ahmed-body wake
+shedding) of St~0.31-0.34 is in the same order of magnitude as
+published values (0.18-0.24), though on the higher end -- most
+plausibly attributable to the coarsened mesh resolution used for the
+transient run. See `mesh/mesh_development_log.md` for the complete,
+step-by-step investigation, including all dead ends and corrections.
 
 ## Overview
 The Ahmed body is a simplified ground-vehicle bluff-body geometry used to study three-dimensional separated flow. Its rear slant angle controls the transition between two distinct wake topologies, producing a well-documented non-monotonic drag-vs-angle curve that makes it a standard benchmark for external-aerodynamics CFD.

@@ -19,7 +19,7 @@ FoamFile
 // level-7 cells as a proxy metric.
 castellatedMesh true;
 snap            true;
-addLayers       true;
+addLayers       false;
 
 geometry
 {
@@ -110,7 +110,7 @@ addLayersControls
     {
         ahmedBody
         {
-            nSurfaceLayers 18;
+            nSurfaceLayers 12;
         }
     }
 
